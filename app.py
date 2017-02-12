@@ -1,9 +1,24 @@
-from flask import Flask, request, jsonify, g
+from flask import Flask, request, jsonify, g, copy_current_request_context
 from flasgger import Swagger
 from flasgger.utils import swag_from, validate, ValidationError
 import sqlite3
+import json
+import gevent
+import gevent.pywsgi
 
 DATABASE = 'db/status.db'
+
+
+def writeToFile(ticketID, content):
+    with open("output/"+str(ticketID)+".json",'w') as f:
+        f.write(json.dumps(content))
+
+
+def readFromFile(ticketID):
+    data = ""
+    with open("output/"+str(ticketID)+".json") as f:
+        data = json.load(f)
+    return data
 
 
 def execute_query(query):
@@ -46,8 +61,19 @@ def post_get_query():
     if val is not None:
         return val
 
-    id = execute_query("INSERT INTO status (progress) VALUES (0)")
+    id = execute_query("INSERT INTO status (progress) VALUES (0);")
 
+    response = []
+    execute_query("UPDATE status SET progress = 100 WHERE id = " + str(id) + ";")
+
+    @copy_current_request_context
+    def calculate_features():
+        for feature in data['features']:
+            response.append({"name": feature,
+                             "value": 0})
+        writeToFile(id, response)
+        execute_query("UPDATE status SET progress = 100 WHERE id = "+str(id)+";")
+    gevent.spawn(calculate_features)
     return jsonify({"id": id,
                     "url": '/get_features/'+str(id)})
 
@@ -55,15 +81,16 @@ def post_get_query():
 @app.route('/get_features/<int:ticketID>', methods=['GET'])
 @swag_from('swagger/get_feature.yml')
 def get_features(ticketID):
-    ticket = query_db('select * from status where id = ?', [ticketID], one=True)
+    ticket = query_db('select * from status where id = ?;', [ticketID], one=True)
     if ticket is None:
         return 'No such ticket'
     else:
-        progress_text = 'Your progress: ' + str(ticket[1]) + "%"
-        return progress_text
-
-    #return jsonify({'ticketID': ticketID})
-
+        progress = ticket[1]
+        if progress == 100:
+            return jsonify(readFromFile(ticketID))
+        else:
+            progress_text = 'Your progress: ' + str(progress) + "%. Please wait and try again."
+            return progress_text
 
 @app.teardown_appcontext
 def close_connection(exception):
@@ -72,4 +99,6 @@ def close_connection(exception):
         db.close()
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    gevent_server = gevent.pywsgi.WSGIServer(('localhost', 5000), app)
+    gevent_server.serve_forever()  # instead of flask_app.run()
+    #app.run(debug=True)

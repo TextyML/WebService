@@ -13,14 +13,16 @@ responses:
   200:
     description : Successfull request
     schema:
-      id : FeatureResponse
-      properties:
-        name:
-          type: string
-          description: Name des Merkmals
-        value:
-          type: number
-          description: Wert des Merksmals
+      type: array
+      items:
+        id : FeatureResponse
+        properties:
+          name:
+            type: string
+            description: Name des Merkmals
+          value:
+            type: number
+            description: Wert des Merksmals
 
   404:
     description: Ticket not found
