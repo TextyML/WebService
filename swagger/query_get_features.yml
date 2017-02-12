@@ -1,0 +1,48 @@
+Starte eine neue Warteschleife mit der Anfrage
+Der übergebende Text wird auf dem externen System zwischengespeichert.
+Nachdem die Daten erfolgreich übertragen wurden, wird dem User ein Ticket geliefert.
+Er kann dann über dieses Ticket seine Anfrage zu einem späteren Zeitpunkt abholen.
+---
+tags:
+  - query
+consumes:
+  - application/json
+parameters:
+  - name: body
+    in: body
+    description: Feature Request
+    required: true
+    schema:
+      id: FeatureRequest
+      properties:
+        text:
+          type: string
+          description: Der Text zum Analysieren
+        features:
+          type: array
+          items:
+            type: string
+            description: Technischer Name des Features
+responses:
+  200:
+    description : Successfull request
+    schema:
+      id : QueryObject
+      properties :
+        id:
+          type: string
+          description: Queryticket
+        url:
+          type: string
+          description: Final URL for Retrieval
+  500:
+    description: Server Error
+    schema:
+      id : Error
+      properties:
+        name:
+          type: string
+          description: Name des Fehlers
+        description:
+          type: string
+          description: Beschreibung des Fehlers

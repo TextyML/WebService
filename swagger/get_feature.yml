@@ -1,0 +1,47 @@
+Gebe die Warteschleifenantwort aus
+Erfordert, dass der User ein Ticket besitzt und dieses noch gültig ist
+---
+tags:
+  - ticketresponse
+parameters:
+  - name: ticketID
+    in: path
+    type: string
+    description: Ticket id
+    required: true
+responses:
+  200:
+    description : Successfull request
+    schema:
+      id : FeatureResponse
+      properties:
+        name:
+          type: string
+          description: Name des Merkmals
+        value:
+          type: number
+          description: Wert des Merksmals
+
+  404:
+    description: Ticket not found
+    schema:
+      id : Error
+      properties:
+        name:
+          type: string
+          description: Name des Fehlers
+        description:
+          type: string
+          description: Beschreibung des Fehlers
+
+  500:
+    description: Server Error
+    schema:
+      id : Error
+      properties:
+        name:
+          type: string
+          description: Name des Fehlers
+        description:
+          type: string
+          description: Beschreibung des Fehlers
