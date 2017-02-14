@@ -1,0 +1,112 @@
+swagger: '2.0'
+info:
+  version: "1.0"
+  title: {{title}}
+consumes:
+  - application/json
+produces:
+  - application/json
+paths:
+  /get_feature:
+    post:
+      summary: Sende Rohdaten zum analysieren. Der User erhält als Antwort ein Ticket.
+      parameters:
+        - name: request
+          in: body
+          description: Feature Request
+          required: true
+          schema:
+            $ref: '#/definitions/FeatureRequest'
+      responses:
+        200:
+          description: Liefere alle analysierten Merkmale zurück
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/FeatureResponse'
+        500:
+          description: Server Error
+          schema:
+            $ref: '#/definitions/Error'
+
+  /get_feature/{ticket_id}:
+    get:
+      summary: Nutze das Ticket um die Antwort abzuholen
+      parameters:
+        - $ref: '#/parameters/ticket_id'
+      responses:
+        200:
+          description : Successfull request
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/FeatureResponse'
+
+        404:
+          description: Ticket not found
+          schema:
+            $ref: '#/definitions/Error'
+
+        500:
+          description: Server Error
+          schema:
+            $ref: '#/definitions/Error'
+
+# Added by API Auto Mocking Plugin
+basePath: /v1/
+schemes:
+ - https
+
+parameters:
+  ticket_id:
+    name: ticket_id
+    description: Ticket's Unique identifier
+    in: path
+    type: string
+    required: true
+    pattern: "^[a-zA-Z0-9-]+$"
+
+definitions:
+  FeatureRequest:
+    type: object
+    properties:
+      text:
+        type: string
+        description: Der Text zum analysieren
+      features:
+        type: array
+        items:
+          type: string
+          description: Technischer Name des Features
+
+  FeatureResponse:
+    type: object
+    properties:
+      name:
+        type: string
+        description: Name des Merkmals
+      value:
+        type: number
+        description: Wert des Merksmals
+
+  FeatureRequest:
+    type: object
+    properties:
+      text:
+        type: string
+        description: Der Text zum analysieren
+      features:
+        type: array
+        items:
+          type: string
+          description: Technischer Name des Features
+
+  Error:
+    type: object
+    properties:
+      name:
+        type: string
+        description: Name des Fehlers
+      description:
+        type: string
+        description: Beschreibung des Fehlers
