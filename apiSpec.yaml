@@ -21,9 +21,7 @@ paths:
         200:
           description: Liefere alle analysierten Merkmale zurück
           schema:
-            type: array
-            items:
-              $ref: '#/definitions/FeatureResponse'
+            $ref: '#/definitions/TicketResponse'
         500:
           description: Server Error
           schema:
@@ -40,7 +38,9 @@ paths:
           schema:
             type: array
             items:
-              $ref: '#/definitions/FeatureResponse'
+              type: array
+              items:
+                $ref: '#/definitions/FeatureResponse'
 
         404:
           description: Ticket not found
@@ -68,16 +68,10 @@ parameters:
 
 definitions:
   FeatureRequest:
-    type: object
-    properties:
-      text:
-        type: string
-        description: Der Text zum analysieren
-      features:
-        type: array
-        items:
-          type: string
-          description: Technischer Name des Features
+    type: array
+    items:
+      type: string
+      description: Der Text zum analysieren
 
   FeatureResponse:
     type: object
@@ -89,17 +83,15 @@ definitions:
         type: number
         description: Wert des Merksmals
 
-  FeatureRequest:
+  TicketResponse:
     type: object
     properties:
-      text:
+      ticketID:
+        type: number
+        description: Ticketnummer
+      url:
         type: string
-        description: Der Text zum analysieren
-      features:
-        type: array
-        items:
-          type: string
-          description: Technischer Name des Features
+        description: Direkter Link zur Statusabfrage
 
   Error:
     type: object
