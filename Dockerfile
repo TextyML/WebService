@@ -26,5 +26,5 @@ RUN cd /home/server && \
 
 USER server
 WORKDIR /home/server/data
-EXPOSE 8080
+EXPOSE 5555
 ENTRYPOINT ["python"]
