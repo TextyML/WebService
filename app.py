@@ -28,5 +28,5 @@ def teardown_db(exception):
 
 if __name__ == '__main__':
     app.add_api('apiSpec.yaml', arguments={'title': 'RestyResolver Example'}, resolver=RestyResolver('api'))
-    gevent_server = gevent.pywsgi.WSGIServer(('localhost', 8080), app)
+    gevent_server = gevent.pywsgi.WSGIServer(('0.0.0.0', 5555), app)
     gevent_server.serve_forever()
