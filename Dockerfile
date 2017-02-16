@@ -25,6 +25,6 @@ RUN cd /home/server && \
     mv textyml-git/Import textyml && rm -rf textyml-git
 
 USER server
-WORKDIR /home/server/
+WORKDIR /home/server/data
 EXPOSE 8080
 ENTRYPOINT ["python"]
