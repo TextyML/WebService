@@ -17,8 +17,8 @@ RUN useradd -ms /bin/bash server
 
 #RUN mkdir /opt/conda && mkdir /opt/nltk_data
 
-RUN cd /home/server && git clone https://github.com/TextyML/WebService.git .
-
+RUN cd /home/server && git clone https://github.com/TextyML/WebService.git data
+RUN cd data
 RUN rm -rf textyml && git clone https://github.com/TextyML/texty.ml.git textyml-git
 RUN mv textyml-git/Import textyml && rm -rf textyml-git
 
