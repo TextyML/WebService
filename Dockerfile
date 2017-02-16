@@ -22,7 +22,8 @@ RUN cd /home/server && \
     cd data && \
     rm -rf textyml && \
     git clone https://github.com/TextyML/texty.ml.git textyml-git && \
-    mv textyml-git/Import textyml && rm -rf textyml-git
+    mv textyml-git/Import textyml && rm -rf textyml-git && \
+    cd .. && chown -R server:server data
 
 USER server
 WORKDIR /home/server/data
